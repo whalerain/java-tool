@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author ZhangXi
  */
 @Slf4j
-public class TextMessageHandler extends ChannelInboundHandlerAdapter implements Broadcast {
+public class TextMessageServerHandler extends ChannelInboundHandlerAdapter implements Broadcast {
 
     /**
      * 客户端Channel池

@@ -13,10 +13,10 @@ class SocketServerTest {
 
     @Test
     void testStart() throws Exception {
-        SocketServer server1 = new SocketServer(10002, new WebSocketServerInitializer(10002));
+        SocketServer server1 = new SocketServer(10002, new WebSocketServerInitializer(10002, "/"));
         server1.start();
         Assertions.assertTrue(NettyTool.isLocalPortUsing(10002));
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(10);
         server1.sendDataToAll(new TextWebSocketFrame("notify all client"));
         TimeUnit.SECONDS.sleep(500);
         server1.shutdown();

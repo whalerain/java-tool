@@ -1,61 +1,110 @@
 package com.github.whalerain.javatool.netty;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
-import java.net.InetSocketAddress;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * SOCKET 客户端
  *
  * @author ZhangXi
  */
+@Slf4j
 public class SocketClient {
 
-    private String host;
 
-    private int port;
+    private static ConcurrentHashMap<String, SocketClient> SOCKET_CLIENT_MAP = new ConcurrentHashMap<>();
 
-    public SocketClient(String host, int port) {
+
+    private final String host;
+    private final int port;
+
+    private int timeoutMillis = 10000;
+
+    @Getter
+    private ChannelFuture future;
+    private final ChannelInitializer initializer;
+
+
+    public SocketClient(String host, int port, ChannelInitializer initializer) {
         this.host = host;
         this.port = port;
+        this.initializer = initializer;
     }
 
-    public void start() throws Exception {
+    /**
+     *
+     *
+     * @throws NettyClientException
+     */
+    public void startConnect() throws NettyClientException {
         EventLoopGroup clientGroup = new NioEventLoopGroup();
 
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.group(clientGroup)
+                // 设置非延迟连接
+                .option(ChannelOption.TCP_NODELAY, true)
+                // 保持连接，默认每2小时检测一次
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                /* ===========================================
+                 * 注意：这里必须设置连接超时时间，否则握手会失败!!!
+                 * =========================================*/
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, this.timeoutMillis)
+                .channel(NioSocketChannel.class);
+        bootstrap.handler(this.initializer);
+
         try {
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(clientGroup)
-                    .channel(NioSocketChannel.class)
-                    .remoteAddress(new InetSocketAddress(this.host, this.port))
-                    .option(ChannelOption.SO_KEEPALIVE, true)
-                    .option(ChannelOption.SO_TIMEOUT, 10000)
-                    .handler(new SocketClientInitializer());
+            this.future = bootstrap.connect(this.host, this.port).sync();
+            if (this.future.isSuccess()) {
+                log.info("服务端：{}:{} 连接成功！", this.host, this.port);
+            }
+        } catch (InterruptedException e) {
+            throw new NettyClientException(e, ErrorType.START_INTERRUPTED);
+        }
 
-            ChannelFuture future = bootstrap.connect().sync();
-
-            future.channel().closeFuture().sync();
-        } finally {
-            // 释放线程池资源
+        // 监听连接关闭动作
+        this.future.channel().closeFuture().addListener((ChannelFutureListener) channelFuture -> {
             clientGroup.shutdownGracefully();
+            log.info("socket连接：{}:{} 已关闭", host, port);
+        });
+    }
+
+    /**
+     * 关闭socket连接
+     */
+    public void close() {
+        if (null != future) {
+            this.future.channel().close();
         }
     }
 
-
-    private static class SocketClientInitializer extends ChannelInitializer<SocketChannel> {
-
-        @Override
-        protected void initChannel(SocketChannel socketChannel) throws Exception {
-
-        }
+    /**
+     * 发送数据
+     * @param msg {@link Object}
+     */
+    public void sendData(Object msg) {
+        this.future.channel().writeAndFlush(msg);
     }
 
+
+    public static void addClient(String key, SocketClient client) {
+        SOCKET_CLIENT_MAP.put(key, client);
+    }
+
+
+    public static SocketClient getClient(String key) {
+        return SOCKET_CLIENT_MAP.get(key);
+    }
+
+
+    public SocketClient withTimeoutMillis(int millis) {
+        this.timeoutMillis = millis;
+        return this;
+    }
 
 }

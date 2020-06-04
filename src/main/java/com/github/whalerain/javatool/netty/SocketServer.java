@@ -36,7 +36,7 @@ public class SocketServer {
     private int timeoutMillis = 10000;
 
     private ChannelFuture channelFuture;
-    private ChannelInitializer initializer;
+    private final ChannelInitializer initializer;
 
 
     public SocketServer(int port, ChannelInitializer initializer) {
