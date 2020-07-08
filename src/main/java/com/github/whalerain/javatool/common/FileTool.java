@@ -1,4 +1,4 @@
-package com.github.whalerain.javatool;
+package com.github.whalerain.javatool.common;
 
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
