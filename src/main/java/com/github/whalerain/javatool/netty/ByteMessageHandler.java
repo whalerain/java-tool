@@ -38,11 +38,11 @@ public class ByteMessageHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ByteBuf) {
             ByteBuf buf = (ByteBuf) msg;
+
             byte[] arrs = new byte[buf.readableBytes()];
             buf.getBytes(0, arrs);
             log.info("接收的字节数据：{}", arrs);
         }
-
 
         log.info("读取数据...");
     }

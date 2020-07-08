@@ -24,6 +24,14 @@ class SocketServerTest {
         Assertions.assertFalse(NettyTool.isLocalPortUsing(10002));
     }
 
+    @Test
+    void testByteServer() throws Exception {
+        SocketServer server = new SocketServer(20001, new ByteSocketServerInitializer());
+        server.start();
+        Assertions.assertTrue(NettyTool.isLocalPortUsing(20001));
+        TimeUnit.SECONDS.sleep(500);
+        server.shutdown();
+    }
 
 
 
