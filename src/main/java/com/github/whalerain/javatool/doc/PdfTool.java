@@ -1,4 +1,4 @@
-package com.github.whalerain.javatool.pdf;
+package com.github.whalerain.javatool.doc;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;

@@ -19,7 +19,7 @@ import java.nio.file.Paths;
  * @author ZhangXi
  */
 @Slf4j
-public class FileTool extends FileUtil {
+public class  FileTool extends FileUtil {
 
     public static final String PATH_SEPARATOR_RIGHT = "\\";
     public static final String PATH_SEPARATOR_LEFT = "/";
