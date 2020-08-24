@@ -19,12 +19,7 @@
         <junit4.version>4.12</junit4.version>
         <slf4j.version>1.7.25</slf4j.version>
         <log4j.version>2.13.3</log4j.version>
-
-        <surefireArgLine></surefireArgLine>
-        <failsafeArgLine></failsafeArgLine>
-        <jacocoArgLine></jacocoArgLine>
     </properties>
-
 
     <repositories>
         <repository>
@@ -34,10 +29,7 @@
         </repository>
     </repositories>
 
-
-
     <dependencies>
-
         <!-- HuTool 通用工具类 -->
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -45,8 +37,7 @@
             <version>5.3.2</version>
         </dependency>
 
-
-
+        <!-- Servlet -->
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -54,7 +45,6 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
-
 
         <!-- JSON -->
         <dependency>
@@ -82,14 +72,13 @@
             <version>2.5.1</version>
         </dependency>
 
-
+        <!-- Netty -->
         <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.50.Final</version>
         </dependency>
-
 
         <!-- JWT -->
         <!-- https://github.com/auth0/java-jwt -->
@@ -99,7 +88,7 @@
             <version>3.10.3</version>
         </dependency>
 
-
+        <!-- Tencent Cloud SDK -->
         <!-- https://mvnrepository.com/artifact/com.tencentcloudapi/tencentcloud-sdk-java -->
         <dependency>
             <groupId>com.tencentcloudapi</groupId>
@@ -107,6 +96,21 @@
             <version>3.1.113</version>
         </dependency>
 
+        <!-- JNA -->
+        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.6.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>5.6.0</version>
+        </dependency>
+
+        <!-- ============= 编译工具 ============= -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
